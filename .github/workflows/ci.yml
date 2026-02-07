@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  PYTHON_VERSION: "3.13"
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - name: Ruff check (linting)
+        run: uv run ruff check src/ tests/
+      - name: Ruff format check
+        run: uv run ruff format --check src/ tests/
+      - name: Mypy type checking
+        run: uv run mypy src/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_pass
+          POSTGRES_DB: hr_helper_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U test_user"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
+    env:
+      DATABASE_URL: postgresql+asyncpg://test_user:test_pass@localhost:5432/hr_helper_test
+      TEST_DATABASE_URL: postgresql+asyncpg://test_user:test_pass@localhost:5432/hr_helper_test
+      UPLOAD_DIR: /tmp/hr_helper_test_uploads
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: uv sync --frozen
+      - name: Run Alembic migrations
+        run: uv run alembic upgrade head
+      - name: Run tests with coverage
+        run: uv run pytest tests/ -v --tb=short --cov=src/app --cov-report=xml
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        if: github.event_name == 'push'
+        with:
+          file: ./coverage.xml

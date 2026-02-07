@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+wheels/
+
+# Virtual environment
+.venv/
+
+# Environment variables
+.env
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Linting
+.mypy_cache/
+.ruff_cache/
+
+# Uploads (runtime storage)
+uploads/
+
+# Claude Code
+.claude/
+
+# OS files
+Thumbs.db
+.DS_Store
+nul

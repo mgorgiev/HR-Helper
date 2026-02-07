@@ -1,0 +1,32 @@
+JOHN DOE
+Software Engineer
+john.doe@example.com | +1 (555) 123-4567 | San Francisco, CA
+
+SUMMARY
+Experienced software engineer with 5+ years of experience building scalable web applications
+and distributed systems. Proficient in Python, TypeScript, and cloud infrastructure.
+
+EXPERIENCE
+
+Senior Software Engineer | TechCorp Inc. | 2021 - Present
+- Designed and implemented microservices architecture serving 10M+ requests/day
+- Led migration from monolith to event-driven architecture using Apache Kafka
+- Mentored team of 4 junior developers, conducting code reviews and pair programming
+
+Software Engineer | StartupXYZ | 2019 - 2021
+- Built RESTful APIs using FastAPI and PostgreSQL
+- Implemented CI/CD pipelines with GitHub Actions and Docker
+- Reduced API response times by 40% through query optimization and caching
+
+Junior Developer | WebAgency | 2018 - 2019
+- Developed responsive web applications using React and Node.js
+- Participated in agile development processes with 2-week sprint cycles
+
+EDUCATION
+B.S. Computer Science | University of California, Berkeley | 2018
+
+SKILLS
+Languages: Python, TypeScript, JavaScript, SQL, Go
+Frameworks: FastAPI, Django, React, Next.js
+Infrastructure: AWS, Docker, Kubernetes, Terraform
+Databases: PostgreSQL, Redis, MongoDB, Elasticsearch

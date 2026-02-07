@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:17-alpine
+    container_name: hr_helper_db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-hr_helper}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hr_helper_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-hr_helper}
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hr_helper}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: hr_helper_app
+    environment:
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-hr_helper}:${POSTGRES_PASSWORD:-hr_helper_dev}@db:5432/${POSTGRES_DB:-hr_helper}
+      UPLOAD_DIR: /app/uploads
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    volumes:
+      - ./src:/app/src
+      - upload_data:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      uv run --no-dev uvicorn app.main:create_app
+      --factory --host 0.0.0.0 --port 8000 --reload
+
+  # Uncomment for Month 2 — ChromaDB
+  # chromadb:
+  #   image: chromadb/chroma:latest
+  #   container_name: hr_helper_chromadb
+  #   ports:
+  #     - "8001:8000"
+  #   volumes:
+  #     - chroma_data:/chroma/chroma
+
+volumes:
+  postgres_data:
+  upload_data:
+  # chroma_data:
