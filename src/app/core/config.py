@@ -27,7 +27,7 @@ class Settings(BaseSettings):
     # AI / Gemini
     google_ai_api_key: str = ""
     gemini_model: str = "gemini-2.0-flash"
-    gemini_embedding_model: str = "text-embedding-004"
+    gemini_embedding_model: str = "gemini-embedding-001"
 
     # ChromaDB
     chromadb_host: str = "localhost"

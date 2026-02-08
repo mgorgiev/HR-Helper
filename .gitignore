@@ -32,6 +32,9 @@ htmlcov/
 # Uploads (runtime storage)
 uploads/
 
+# ChromaDB (runtime data)
+chroma_data/
+
 # Claude Code
 .claude/
 
