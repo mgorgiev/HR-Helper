@@ -1,4 +1,5 @@
 import uuid
+from datetime import UTC, datetime
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -54,6 +55,25 @@ async def update_extraction(
         resume.extracted_text = text
     if error is not None:
         resume.extraction_error = error
+    await db.flush()
+    await db.refresh(resume)
+    return resume
+
+
+async def update_parsing(
+    db: AsyncSession,
+    resume: Resume,
+    *,
+    parsed_data: dict | None = None,
+    error: str | None = None,
+    status: str = "completed",
+) -> Resume:
+    resume.parsing_status = status
+    if parsed_data is not None:
+        resume.parsed_data = parsed_data
+        resume.parsed_at = datetime.now(UTC)
+    if error is not None:
+        resume.parsing_error = error
     await db.flush()
     await db.refresh(resume)
     return resume

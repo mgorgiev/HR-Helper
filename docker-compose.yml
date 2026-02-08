@@ -16,6 +16,19 @@ services:
       timeout: 5s
       retries: 5
 
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: hr_helper_chromadb
+    ports:
+      - "${CHROMADB_PORT:-8001}:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   app:
     build:
       context: .
@@ -24,6 +37,9 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-hr_helper}:${POSTGRES_PASSWORD:-hr_helper_dev}@db:5432/${POSTGRES_DB:-hr_helper}
       UPLOAD_DIR: /app/uploads
+      GOOGLE_AI_API_KEY: ${GOOGLE_AI_API_KEY:-}
+      CHROMADB_HOST: chromadb
+      CHROMADB_PORT: 8000
     ports:
       - "${APP_PORT:-8000}:8000"
     volumes:
@@ -32,20 +48,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      chromadb:
+        condition: service_healthy
     command: >
       uv run --no-dev uvicorn app.main:create_app
       --factory --host 0.0.0.0 --port 8000 --reload
 
-  # Uncomment for Month 2 — ChromaDB
-  # chromadb:
-  #   image: chromadb/chroma:latest
-  #   container_name: hr_helper_chromadb
-  #   ports:
-  #     - "8001:8000"
-  #   volumes:
-  #     - chroma_data:/chroma/chroma
-
 volumes:
   postgres_data:
   upload_data:
-  # chroma_data:
+  chroma_data:

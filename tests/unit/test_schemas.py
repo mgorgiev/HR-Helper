@@ -153,6 +153,10 @@ class TestResumeRead:
             extracted_text="Some extracted text",
             extraction_status="completed",
             extraction_error=None,
+            parsed_data=None,
+            parsing_status="pending",
+            parsing_error=None,
+            parsed_at=None,
             created_at=now,
             updated_at=now,
         )

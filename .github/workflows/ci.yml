@@ -40,10 +40,22 @@ jobs:
           --health-interval=5s
           --health-timeout=5s
           --health-retries=5
+      chromadb:
+        image: chromadb/chroma:latest
+        ports:
+          - 8001:8000
+        options: >-
+          --health-cmd="curl -f http://localhost:8000/api/v1/heartbeat || exit 1"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
     env:
       DATABASE_URL: postgresql+asyncpg://test_user:test_pass@localhost:5432/hr_helper_test
       TEST_DATABASE_URL: postgresql+asyncpg://test_user:test_pass@localhost:5432/hr_helper_test
       UPLOAD_DIR: /tmp/hr_helper_test_uploads
+      GOOGLE_AI_API_KEY: test-key-not-used
+      CHROMADB_HOST: localhost
+      CHROMADB_PORT: "8001"
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5

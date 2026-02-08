@@ -25,5 +25,21 @@ class FileValidationError(HTTPException):
         )
 
 
+class AIServiceError(HTTPException):
+    def __init__(self, detail: str) -> None:
+        super().__init__(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=f"AI service error: {detail}",
+        )
+
+
+class PreconditionError(HTTPException):
+    def __init__(self, detail: str) -> None:
+        super().__init__(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=detail,
+        )
+
+
 class ExtractionError(Exception):
     """Raised when text extraction from a file fails."""

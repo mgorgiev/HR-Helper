@@ -11,6 +11,12 @@ class ExtractionStatus(StrEnum):
     FAILED = "failed"
 
 
+class ParsingStatus(StrEnum):
+    PENDING = "pending"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
 class ResumeRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -24,6 +30,10 @@ class ResumeRead(BaseModel):
     extracted_text: str | None
     extraction_status: str
     extraction_error: str | None
+    parsed_data: dict | None
+    parsing_status: str
+    parsing_error: str | None
+    parsed_at: datetime | None
     created_at: datetime
     updated_at: datetime
 
@@ -32,3 +42,10 @@ class ResumeTextResponse(BaseModel):
     id: uuid.UUID
     extracted_text: str | None
     extraction_status: str
+
+
+class ResumeParsedResponse(BaseModel):
+    id: uuid.UUID
+    parsed_data: dict | None
+    parsing_status: str
+    parsing_error: str | None

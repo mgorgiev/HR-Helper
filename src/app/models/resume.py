@@ -1,7 +1,9 @@
 import uuid
+from datetime import datetime
 from typing import TYPE_CHECKING
 
-from sqlalchemy import ForeignKey, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models.base import Base, TimestampMixin, UUIDPrimaryKeyMixin
@@ -28,6 +30,14 @@ class Resume(UUIDPrimaryKeyMixin, TimestampMixin, Base):
         String(20), nullable=False, default="pending", server_default="pending", index=True
     )
     extraction_error: Mapped[str | None] = mapped_column(nullable=True)
+
+    # AI parsing fields
+    parsed_data: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
+    parsed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    parsing_status: Mapped[str] = mapped_column(
+        String(20), nullable=False, default="pending", server_default="pending", index=True
+    )
+    parsing_error: Mapped[str | None] = mapped_column(nullable=True)
 
     candidate: Mapped["Candidate"] = relationship(back_populates="resumes")
 
